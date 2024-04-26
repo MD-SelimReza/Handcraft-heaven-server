@@ -5,7 +5,14 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// app.use(cors());
+const corsConfig = {
+    origin: '',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.4ldhpeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -25,6 +32,12 @@ async function run() {
         await client.connect();
 
         const artsCollection = client.db('artsDB').collection('arts');
+
+        app.get('/allArts', async (req, res) => {
+            const cursor = artsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
         app.post('/allArts', async (req, res) => {
             const newArt = req.body;
