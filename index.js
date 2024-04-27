@@ -54,6 +54,29 @@ async function run() {
             res.send(result);
         })
 
+        app.put('/allArts/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const product = req.body;
+            const updateProduct = {
+                $set: {
+                    item_name: product.item_name,
+                    subcategory_name: product.subcategory_name,
+                    description: product.description,
+                    price: product.price,
+                    rating: product.rating,
+                    customization: product.customization,
+                    processing_time: product.processing_time,
+                    stockStatus: product.stockStatus,
+                    image: product.image,
+                }
+            };
+            const result = await artsCollection.updateOne(filter, updateProduct, options)
+            res.send(result);
+        })
+
         app.delete('/allArts/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
