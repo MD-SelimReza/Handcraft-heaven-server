@@ -22,12 +22,19 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
+        await client.connect();
 
         const artsCollection = client.db('artsDB').collection('arts');
+        const craftsCollection = client.db('artsDB').collection('Arts&CraftsItem');
 
         app.get('/allArts', async (req, res) => {
             const cursor = artsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/craftCategories', async (req, res) => {
+            const cursor = craftsCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
